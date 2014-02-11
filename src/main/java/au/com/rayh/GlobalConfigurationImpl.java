@@ -50,6 +50,7 @@ import jenkins.model.GlobalConfiguration;
 @Extension
 public final class GlobalConfigurationImpl extends GlobalConfiguration {
 	private String xcodebuildPath = "/usr/bin/xcodebuild";
+  private String xctoolPath = "/usr/local/bin/xctool";
 	private String xcrunPath = "/usr/bin/xcrun";
 	private String agvtoolPath = "/usr/bin/agvtool";
 	private String defaultKeychain = "";
@@ -75,6 +76,15 @@ public final class GlobalConfigurationImpl extends GlobalConfiguration {
 	}
 	
     public FormValidation doCheckXcodebuildPath(@QueryParameter String value) throws IOException, ServletException {
+        if (StringUtils.isEmpty(value)) {
+            return FormValidation.error(Messages.XCodeBuilder_xcodebuildPathNotSet());
+        } else {
+            // TODO: check that the file exists (and if an agent is used ?)
+        }
+        return FormValidation.ok();
+    }
+
+    public FormValidation doCheckXctoolPath(@QueryParameter String value) throws IOException, ServletException {
         if (StringUtils.isEmpty(value)) {
             return FormValidation.error(Messages.XCodeBuilder_xcodebuildPathNotSet());
         } else {
@@ -153,6 +163,15 @@ public final class GlobalConfigurationImpl extends GlobalConfiguration {
 	public void setXcodebuildPath(String xcodebuildPath) {
 		this.xcodebuildPath = xcodebuildPath;
 	}
+
+  public String getXctoolPath() {
+		return xctoolPath;
+	}
+
+  public void setXctoolPath(String xctoolPath) {
+		this.xctoolPath = xctoolPath;
+	}
+
 
 	public String getXcrunPath() {
 		return xcrunPath;

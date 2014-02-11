@@ -486,7 +486,13 @@ public class XCodeBuilder extends Builder {
         // Build
         StringBuilder xcodeReport = new StringBuilder(Messages.XCodeBuilder_invokeXcodebuild());
         XCodeBuildOutputParser reportGenerator = new JenkinsXCodeBuildOutputParser(projectRoot, listener);
-        List<String> commandLine = Lists.newArrayList(getGlobalConfiguration().getXcodebuildPath());
+        List<String> commandLine = null;
+        boolean xctools = (getGlobalConfiguration().getXctoolPath().length()>0);
+        if(xctools) {
+          commandLine = Lists.newArrayList(getGlobalConfiguration().getXctoolPath());
+        } else {
+          commandLine = Lists.newArrayList(getGlobalConfiguration().getXcodebuildPath());
+        }
 
         // Prioritizing schema over target setting
         if (!StringUtils.isEmpty(xcodeSchema)) {
@@ -497,7 +503,11 @@ public class XCodeBuilder extends Builder {
             commandLine.add("-alltargets");
             xcodeReport.append("target: ALL");
         } else {
-            commandLine.add("-target");
+            if(xctools) {
+                commandLine.add("-only");
+            } else {
+                commandLine.add("-target");
+            }
             commandLine.add(target);
             xcodeReport.append("target: ").append(target);
         }
